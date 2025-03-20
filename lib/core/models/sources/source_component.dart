@@ -5,6 +5,7 @@ abstract class SourceComponent extends Component {
     super.id,
     required super.name,
     required super.symbol,
+    super.image,
     required super.width,
     required super.height,
   });
