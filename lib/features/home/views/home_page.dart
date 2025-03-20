@@ -1,4 +1,5 @@
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/background_canvas.dart';
 import 'package:circuit_solver/features/home/views/toolbox/toolbox.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
             focusNode: homeNotifier.homeFocusNode..requestFocus(),
             child: const Row(
               children: [
-                Expanded(child: SizedBox()),
+                Expanded(child: BackgroundCanvas()),
                 Toolbox(),
               ],
             ),

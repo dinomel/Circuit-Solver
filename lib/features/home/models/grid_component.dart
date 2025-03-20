@@ -1,4 +1,4 @@
-import 'dart:math' show atan2;
+import 'dart:math' show atan2, sqrt;
 
 import 'package:circuit_solver/core/models/component.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
@@ -11,6 +11,13 @@ class GridComponent {
   double get rotation => atan2(
         endCoordinate.y - startCoordinate.y,
         endCoordinate.x - startCoordinate.x,
+      );
+
+  double get length => sqrt(
+        (endCoordinate.x - startCoordinate.x) *
+                (endCoordinate.x - startCoordinate.x) +
+            (endCoordinate.y - startCoordinate.y) *
+                (endCoordinate.y - startCoordinate.y),
       );
 
   GridComponent({
