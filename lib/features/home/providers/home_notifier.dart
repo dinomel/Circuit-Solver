@@ -86,6 +86,11 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   void onPointerUp(PointerUpEvent event) {
+    if (selectedGridComponent == null) return;
+    if (selectedGridComponent!.startCoordinate ==
+        selectedGridComponent!.endCoordinate) {
+      _gridComponents.remove(selectedGridComponent);
+    }
     selectedGridComponent = null;
     notifyListeners();
   }

@@ -1,3 +1,4 @@
+import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:circuit_solver/core/models/capacitor.dart';
 import 'package:circuit_solver/core/models/inductor.dart';
 import 'package:circuit_solver/core/models/resistor.dart';
@@ -33,16 +34,16 @@ class GridComponentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Positioned(
       top: gridComponent.top,
-      left: gridComponent.startCoordinate.x.toDouble(),
+      left: gridComponent.left,
       child: Selector<HomeNotifier, (double, double)>(
-        selector: (_, __) => (gridComponent.rotation, gridComponent.length),
+        selector: (_, __) => (gridComponent.rotation, gridComponent.distance),
         builder: (_, data, __) {
           final rotation = data.$1;
-          final length = data.$2;
+          final distance = data.$2;
           return Transform.rotate(
             angle: rotation,
             alignment: Alignment.centerLeft,
-            child: _buildSpecificComponent(length),
+            child: _buildSpecificComponent(Constants.gridSize * distance),
           );
         },
       ),

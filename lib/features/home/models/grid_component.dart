@@ -1,5 +1,6 @@
 import 'dart:math' show atan2, sqrt;
 
+import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:circuit_solver/core/models/component.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
@@ -14,7 +15,7 @@ class GridComponent {
         endCoordinate.x - startCoordinate.x,
       );
 
-  double get length => sqrt(
+  double get distance => sqrt(
         (endCoordinate.x - startCoordinate.x) *
                 (endCoordinate.x - startCoordinate.x) +
             (endCoordinate.y - startCoordinate.y) *
@@ -27,7 +28,8 @@ class GridComponent {
     required this.endCoordinate,
   });
 
-  double get top {
-    return component is Wire ? startCoordinate.y - 1 : startCoordinate.y - 8;
-  }
+  double get top =>
+      Constants.gridSize * startCoordinate.y - (component is Wire ? 1 : 8);
+
+  double get left => Constants.gridSize * startCoordinate.x * 1;
 }

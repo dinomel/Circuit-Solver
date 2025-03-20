@@ -1,3 +1,4 @@
+import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class ResistorWidget extends StatelessWidget {
@@ -7,31 +8,31 @@ class ResistorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double width = Constants.gridSize * 5 / 2;
     return SizedBox(
       width: length,
       child: Row(
         children: [
-          Expanded(
-            child: Container(
-              height: 2,
-              color: Colors.black,
-            ),
-          ),
           Container(
-            height: 16,
-            width: 48,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,
-                width: 2,
+            height: 2,
+            width: (length - width) / 2 < 0 ? 4 : (length - width) / 2,
+            color: Colors.black,
+          ),
+          Flexible(
+            child: Container(
+              height: 16,
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.black,
+                  width: 2,
+                ),
               ),
             ),
           ),
-          Expanded(
-            child: Container(
-              height: 2,
-              color: Colors.black,
-            ),
+          Container(
+            height: 2,
+            width: (length - width) / 2 < 0 ? 4 : (length - width) / 2,
+            color: Colors.black,
           ),
         ],
       ),
