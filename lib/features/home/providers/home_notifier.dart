@@ -20,6 +20,28 @@ class HomeNotifier extends ChangeNotifier {
 
   List<GridComponent> get gridComponents => [..._gridComponents];
 
+  List<(Coordinate, int)> get allNodes => _gridComponents.fold(
+        [],
+        (prevValue, gridComponent) {
+          final coordinates = [
+            gridComponent.startCoordinate,
+            gridComponent.endCoordinate,
+          ];
+
+          for (var coordinate in coordinates) {
+            int index = prevValue.indexWhere((e) => e.$1 == coordinate);
+
+            index == -1
+                ? prevValue.add((coordinate, 1))
+                : prevValue[index] = (
+                    prevValue[index].$1,
+                    prevValue[index].$2 + 1,
+                  );
+          }
+          return prevValue;
+        },
+      );
+
   void selectComponent(ToolboxComponent? toolboxComponent) {
     selectedToolboxComponent = toolboxComponent;
     notifyListeners();
