@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart' show Uuid;
+
 abstract class Component {
   final String id;
   final String name;
@@ -6,12 +8,12 @@ abstract class Component {
   final double width;
   final double height;
 
-  const Component({
-    required this.id,
+  Component({
+    String? id,
     required this.name,
     required this.symbol,
     required this.width,
     required this.height,
     this.image,
-  });
+  }) : id = id ?? const Uuid().v4();
 }

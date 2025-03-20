@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:circuit_solver/core/models/capacitor.dart';
+import 'package:circuit_solver/core/models/passive_components/capacitor.dart';
 import 'package:circuit_solver/core/models/component.dart';
-import 'package:circuit_solver/core/models/inductor.dart';
-import 'package:circuit_solver/core/models/resistor.dart';
+import 'package:circuit_solver/core/models/passive_components/inductor.dart';
+import 'package:circuit_solver/core/models/passive_components/resistor.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';

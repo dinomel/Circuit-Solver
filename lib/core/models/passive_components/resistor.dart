@@ -1,11 +1,11 @@
 import 'package:circuit_solver/core/constants/constants.dart';
-import 'package:circuit_solver/core/models/passive_component.dart';
+import 'package:circuit_solver/core/models/passive_components/passive_component.dart';
 
 class Resistor extends PassiveComponent {
   final double resistance;
 
-  const Resistor({
-    required super.id,
+  Resistor({
+    super.id,
     required this.resistance,
   }) : super(
           name: 'Resistor',

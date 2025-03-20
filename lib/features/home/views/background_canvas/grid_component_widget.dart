@@ -1,7 +1,7 @@
 import 'package:circuit_solver/core/constants/constants.dart';
-import 'package:circuit_solver/core/models/capacitor.dart';
-import 'package:circuit_solver/core/models/inductor.dart';
-import 'package:circuit_solver/core/models/resistor.dart';
+import 'package:circuit_solver/core/models/passive_components/capacitor.dart';
+import 'package:circuit_solver/core/models/passive_components/inductor.dart';
+import 'package:circuit_solver/core/models/passive_components/resistor.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
