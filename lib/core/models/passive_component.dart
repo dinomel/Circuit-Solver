@@ -6,5 +6,7 @@ abstract class PassiveComponent extends Component {
     required super.name,
     required super.symbol,
     required super.image,
+    required super.width,
+    required super.height,
   });
 }

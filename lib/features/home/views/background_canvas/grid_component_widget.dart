@@ -5,6 +5,8 @@ import 'package:circuit_solver/core/models/resistor.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/capacitor_widget.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/inductor_widget.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/resistor_widget.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/wire_widget.dart';
 import 'package:flutter/material.dart';
@@ -15,19 +17,47 @@ class GridComponentWidget extends StatelessWidget {
 
   const GridComponentWidget({super.key, required this.gridComponent});
 
-  Widget _buildSpecificComponent(double length) {
+  Widget _buildSpecificComponent() {
+    final length = Constants.gridSize * gridComponent.distance;
+    final width = gridComponent.component.width;
+    final height = gridComponent.component.height;
+
+    Widget widget;
+
     switch (gridComponent.component) {
-      case Wire():
-        return WireWidget(length: length);
       case Resistor():
-        return ResistorWidget(length: length);
-      case Inductor():
-        return const SizedBox();
+        widget = const ResistorWidget();
       case Capacitor():
-        return const SizedBox();
+        widget = const CapacitorWidget();
+      case Inductor():
+        widget = const InductorWidget();
       default:
-        return const SizedBox();
+        widget = WireWidget(length: length);
     }
+
+    return SizedBox(
+      width: length,
+      child: Row(
+        children: [
+          Container(
+            height: 2,
+            width: length < width ? 4 : (length - width) / 2,
+            color: Colors.black,
+          ),
+          Expanded(
+            child: SizedBox(
+              height: height,
+              child: widget,
+            ),
+          ),
+          Container(
+            height: 2,
+            width: length < width ? 4 : (length - width) / 2,
+            color: Colors.black,
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -43,7 +73,9 @@ class GridComponentWidget extends StatelessWidget {
           return Transform.rotate(
             angle: rotation,
             alignment: Alignment.centerLeft,
-            child: _buildSpecificComponent(Constants.gridSize * distance),
+            child: gridComponent.component is Wire
+                ? WireWidget(length: Constants.gridSize * distance)
+                : _buildSpecificComponent(),
           );
         },
       ),

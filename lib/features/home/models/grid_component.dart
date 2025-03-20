@@ -1,6 +1,7 @@
 import 'dart:math' show atan2, sqrt;
 
 import 'package:circuit_solver/core/constants/constants.dart';
+import 'package:circuit_solver/core/models/capacitor.dart';
 import 'package:circuit_solver/core/models/component.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
@@ -29,7 +30,7 @@ class GridComponent {
   });
 
   double get top =>
-      Constants.gridSize * startCoordinate.y - (component is Wire ? 1 : 8);
+      Constants.gridSize * startCoordinate.y - component.height / 2;
 
-  double get left => Constants.gridSize * startCoordinate.x * 1;
+  double get left => Constants.gridSize * startCoordinate.x / 1;
 }
