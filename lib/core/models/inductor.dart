@@ -1,4 +1,4 @@
-import 'package:circuit_solver/features/core/models/passive_component.dart';
+import 'package:circuit_solver/core/models/passive_component.dart';
 
 class Inductor extends PassiveComponent {
   final double inductance;

@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show KeyDownEvent;
 
 class HomeNotifier extends ChangeNotifier {
   final FocusNode homeFocusNode = FocusNode();
-
   ToolboxComponent? selectedComponent;
 
   void selectComponent(ToolboxComponent? toolboxComponent) {
