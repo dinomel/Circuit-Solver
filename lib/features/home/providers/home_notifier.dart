@@ -1,5 +1,9 @@
 import 'dart:developer';
 
+import 'package:circuit_solver/core/models/capacitor.dart';
+import 'package:circuit_solver/core/models/component.dart';
+import 'package:circuit_solver/core/models/inductor.dart';
+import 'package:circuit_solver/core/models/resistor.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
@@ -38,33 +42,38 @@ class HomeNotifier extends ChangeNotifier {
     }
   }
 
-  //
-
-  @override
-  void dispose() {
-    homeFocusNode.dispose();
-    super.dispose();
-  }
-
   void onPointerDown(PointerDownEvent event) {
-    if (selectedToolboxComponent == ToolboxComponent.wire) {
-      final Coordinate startCoordinate = Coordinate.fromOffset(
-        event.localPosition,
-      );
-      final Coordinate endCoordinate = Coordinate.fromOffset(
-        event.localPosition,
-      );
+    if (selectedToolboxComponent == null) return;
+    final Coordinate startCoordinate = Coordinate.fromOffset(
+      event.localPosition,
+    );
+    final Coordinate endCoordinate = Coordinate.fromOffset(
+      event.localPosition,
+    );
 
-      final gridComponent = GridComponent(
-        component: Wire(id: const Uuid().v4()),
-        startCoordinate: startCoordinate,
-        endCoordinate: endCoordinate,
-      );
-      _gridComponents.add(gridComponent);
-      selectedGridComponent = gridComponent;
+    final String id = const Uuid().v4();
+    Component component;
 
-      notifyListeners();
+    switch (selectedToolboxComponent!) {
+      case ToolboxComponent.wire:
+        component = Wire(id: id);
+      case ToolboxComponent.resistor:
+        component = Resistor(id: id, resistance: 100);
+      case ToolboxComponent.capacitor:
+        component = Capacitor(id: id, capacitance: 0.1);
+      case ToolboxComponent.inductor:
+        component = Inductor(id: id, inductance: 1);
     }
+
+    final gridComponent = GridComponent(
+      component: component,
+      startCoordinate: startCoordinate,
+      endCoordinate: endCoordinate,
+    );
+    _gridComponents.add(gridComponent);
+    selectedGridComponent = gridComponent;
+
+    notifyListeners();
   }
 
   void onPointerMove(PointerMoveEvent event) {
@@ -79,6 +88,12 @@ class HomeNotifier extends ChangeNotifier {
   void onPointerUp(PointerUpEvent event) {
     selectedGridComponent = null;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    homeFocusNode.dispose();
+    super.dispose();
   }
 }
 

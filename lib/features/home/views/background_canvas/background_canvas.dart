@@ -1,6 +1,6 @@
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
-import 'package:circuit_solver/features/home/views/background_canvas/grid_component_container.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/grid_component_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,7 @@ class BackgroundCanvas extends StatelessWidget {
               fit: StackFit.expand,
               children: gridComponents
                   .map(
-                    (gridComponent) => GridComponentContainer(
+                    (gridComponent) => GridComponentWidget(
                       gridComponent: gridComponent,
                     ),
                   )
