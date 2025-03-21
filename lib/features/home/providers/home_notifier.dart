@@ -78,15 +78,15 @@ class HomeNotifier extends ChangeNotifier {
       case ToolboxComponent.wire:
         component = Wire();
       case ToolboxComponent.resistor:
-        component = Resistor(resistance: 100);
+        component = Resistor(resistance: 1000);
       case ToolboxComponent.capacitor:
-        component = Capacitor(capacitance: 0.1);
+        component = Capacitor(capacitance: 1/100000);
       case ToolboxComponent.inductor:
         component = Inductor(inductance: 1);
       case ToolboxComponent.acVoltageSource:
-        component = ACVoltageSource(maxVoltage: 220);
+        component = ACVoltageSource(maxVoltage: 5);
       case ToolboxComponent.dcVoltageSource:
-        component = DCVoltageSource(voltage: 220);
+        component = DCVoltageSource(voltage: 5);
     }
 
     final gridComponent = GridComponent(

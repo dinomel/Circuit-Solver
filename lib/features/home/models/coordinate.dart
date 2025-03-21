@@ -36,4 +36,9 @@ class Coordinate {
 
   @override
   int get hashCode => x.hashCode ^ y.hashCode;
+
+  @override
+  String toString() {
+    return 'Coordinate{x: $x, y: $y}';
+  }
 }
