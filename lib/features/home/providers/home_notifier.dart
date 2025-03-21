@@ -1,15 +1,14 @@
-import 'dart:developer';
-
 import 'package:circuit_solver/core/models/passive_components/capacitor.dart';
 import 'package:circuit_solver/core/models/component.dart';
 import 'package:circuit_solver/core/models/passive_components/inductor.dart';
 import 'package:circuit_solver/core/models/passive_components/resistor.dart';
+import 'package:circuit_solver/core/models/sources/ac_voltage_source.dart';
+import 'package:circuit_solver/core/models/sources/dc_voltage_source.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show KeyDownEvent;
-import 'package:uuid/uuid.dart';
 
 class HomeNotifier extends ChangeNotifier {
   final FocusNode homeFocusNode = FocusNode();
@@ -73,18 +72,21 @@ class HomeNotifier extends ChangeNotifier {
       event.localPosition,
     );
 
-    final String id = const Uuid().v4();
     Component component;
 
     switch (selectedToolboxComponent!) {
       case ToolboxComponent.wire:
-        component = Wire(id: id);
+        component = Wire();
       case ToolboxComponent.resistor:
-        component = Resistor(id: id, resistance: 100);
+        component = Resistor(resistance: 100);
       case ToolboxComponent.capacitor:
-        component = Capacitor(id: id, capacitance: 0.1);
+        component = Capacitor(capacitance: 0.1);
       case ToolboxComponent.inductor:
-        component = Inductor(id: id, inductance: 1);
+        component = Inductor(inductance: 1);
+      case ToolboxComponent.acVoltageSource:
+        component = ACVoltageSource(maxVoltage: 220);
+      case ToolboxComponent.dcVoltageSource:
+        component = DCVoltageSource(voltage: 220);
     }
 
     final gridComponent = GridComponent(
@@ -129,4 +131,6 @@ enum ToolboxComponent {
   resistor,
   capacitor,
   inductor,
+  acVoltageSource,
+  dcVoltageSource,
 }

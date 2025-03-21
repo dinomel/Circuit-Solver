@@ -2,10 +2,14 @@ import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:circuit_solver/core/models/passive_components/capacitor.dart';
 import 'package:circuit_solver/core/models/passive_components/inductor.dart';
 import 'package:circuit_solver/core/models/passive_components/resistor.dart';
+import 'package:circuit_solver/core/models/sources/ac_voltage_source.dart';
+import 'package:circuit_solver/core/models/sources/dc_voltage_source.dart';
 import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/ac_voltage_source_widget.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/capacitor_widget.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/dc_voltage_source_widget.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/inductor_widget.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/resistor_widget.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/wire_widget.dart';
@@ -31,6 +35,10 @@ class GridComponentWidget extends StatelessWidget {
         widget = const CapacitorWidget();
       case Inductor():
         widget = const InductorWidget();
+      case ACVoltageSource():
+        widget = const ACVoltageSourceWidget();
+      case DCVoltageSource():
+        widget = const DCVoltageSourceWidget();
       default:
         widget = WireWidget(length: length);
     }
