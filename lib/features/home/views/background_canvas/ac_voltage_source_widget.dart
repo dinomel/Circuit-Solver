@@ -1,6 +1,5 @@
 import 'dart:math' show pi;
 
-import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class ACVoltageSourceWidget extends StatelessWidget {
@@ -19,16 +18,15 @@ class ACVoltageSourceWidget extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
           child: CustomPaint(painter: ACVoltageSourcePainter()),
         ),
-        const Positioned(
+        Positioned(
           top: 0,
           right: 0,
-          child: Text(
-            '*',
-            style: TextStyle(
-              height: 0.4,
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+          child: Container(
+            height: 3,
+            width: 3,
+            decoration: const BoxDecoration(
               color: Colors.black,
+              shape: BoxShape.circle,
             ),
           ),
         ),
