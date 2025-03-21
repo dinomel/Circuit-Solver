@@ -11,12 +11,15 @@ import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show KeyDownEvent;
+import 'package:flutter/src/gestures/events.dart';
 
 class HomeNotifier extends ChangeNotifier {
   final FocusNode homeFocusNode = FocusNode();
   ToolboxComponent? selectedToolboxComponent;
-
   final List<GridComponent> _gridComponents = [];
+  Rect? selectionRect;
+  Offset? _selectionRectStartPosition;
+  Offset? _selectionRectEndPosition;
 
   List<GridComponent> get gridComponents => [..._gridComponents];
 
@@ -110,6 +113,19 @@ class HomeNotifier extends ChangeNotifier {
     _unselectAllGridComponents();
 
     if (selectedToolboxComponent == null) {
+      //TODO: if a component is behind it should be selected and no rect is drawn,
+      //TODO: instead that component should be moved
+
+
+
+      _selectionRectStartPosition = event.localPosition;
+      _selectionRectEndPosition = event.localPosition;
+      selectionRect = Rect.fromPoints(
+        _selectionRectStartPosition!,
+        _selectionRectEndPosition!,
+      );
+
+      notifyListeners();
       return;
     }
 
@@ -148,6 +164,26 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   void onPointerMove(PointerMoveEvent event) {
+    if (selectedToolboxComponent == null) {
+      if (_selectionRectStartPosition == null) return;
+      _selectionRectEndPosition = event.localPosition;
+      selectionRect = Rect.fromPoints(
+        _selectionRectStartPosition!,
+        _selectionRectEndPosition!,
+      );
+      // select components
+      for (var gridComponent in _gridComponents) {
+        if (selectionRect!.contains(gridComponent.startCoordinate.toOffset()) ||
+            selectionRect!.contains(gridComponent.endCoordinate.toOffset())) {
+          gridComponent.isSelected = true;
+        } else {
+          gridComponent.isSelected = false;
+        }
+      }
+      notifyListeners();
+
+      return;
+    }
     if (selectedGridComponents.length == 1) {
       selectedGridComponents.first.endCoordinate = Coordinate.fromOffset(
         event.localPosition,
@@ -157,6 +193,13 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   void onPointerUp(PointerUpEvent event) {
+    if (selectedToolboxComponent == null) {
+      selectionRect = null;
+      _selectionRectStartPosition = null;
+      _selectionRectEndPosition = null;
+      notifyListeners();
+      return;
+    }
     if (selectedGridComponents.length != 1) return;
     if (selectedGridComponents.first.startCoordinate ==
         selectedGridComponents.first.endCoordinate) {
@@ -164,6 +207,19 @@ class HomeNotifier extends ChangeNotifier {
     }
     _unselectAllGridComponents();
     notifyListeners();
+  }
+
+  void onPointerHover(PointerHoverEvent event) {
+    if (selectedToolboxComponent != null) return;
+    // final pos = event.localPosition;
+    // for (var gridComponent in _gridComponents) {
+    //   if (selectionRect!.contains(gridComponent.startCoordinate.toOffset()) ||
+    //       selectionRect!.contains(gridComponent.endCoordinate.toOffset())) {
+    //     gridComponent.isSelected = true;
+    //   } else {
+    //     gridComponent.isSelected = false;
+    //   }
+    // }
   }
 
   @override

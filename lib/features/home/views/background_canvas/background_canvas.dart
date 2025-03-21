@@ -2,6 +2,7 @@ import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/component_selector.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/grid_component_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +17,7 @@ class BackgroundCanvas extends StatelessWidget {
       onPointerDown: homeNotifier.onPointerDown,
       onPointerMove: homeNotifier.onPointerMove,
       onPointerUp: homeNotifier.onPointerUp,
+      onPointerHover: homeNotifier.onPointerHover,
       child: Container(
         color: Colors.white,
         child: Selector<
@@ -65,6 +67,7 @@ class BackgroundCanvas extends StatelessWidget {
                     );
                   },
                 ),
+                const ComponentSelector(),
               ],
             );
           },
