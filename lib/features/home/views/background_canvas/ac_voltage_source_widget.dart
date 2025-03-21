@@ -3,7 +3,9 @@ import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 
 class ACVoltageSourceWidget extends StatelessWidget {
-  const ACVoltageSourceWidget({super.key});
+  final bool isSelected;
+
+  const ACVoltageSourceWidget({super.key, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +15,17 @@ class ACVoltageSourceWidget extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.black, width: 2),
+            border: Border.all(
+              color: isSelected ? Colors.blue : Colors.black,
+              width: 2,
+            ),
           ),
           padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
-          child: CustomPaint(painter: ACVoltageSourcePainter()),
+          child: CustomPaint(
+            painter: ACVoltageSourcePainter(
+              color: isSelected ? Colors.blue : Colors.black,
+            ),
+          ),
         ),
         Positioned(
           top: 0,
@@ -36,10 +45,14 @@ class ACVoltageSourceWidget extends StatelessWidget {
 }
 
 class ACVoltageSourcePainter extends CustomPainter {
+  final Color color;
+
+  ACVoltageSourcePainter({super.repaint, required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = Colors.black
+      ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 

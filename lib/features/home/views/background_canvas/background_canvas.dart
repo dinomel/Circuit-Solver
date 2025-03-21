@@ -18,8 +18,12 @@ class BackgroundCanvas extends StatelessWidget {
       onPointerUp: homeNotifier.onPointerUp,
       child: Container(
         color: Colors.white,
-        child: Selector<HomeNotifier,
-            (List<GridComponent>, List<(Coordinate, int)>)>(
+        child: Selector<
+            HomeNotifier,
+            (
+              List<GridComponent>,
+              List<(Coordinate, int)>,
+            )>(
           selector: (_, notifier) => (
             notifier.gridComponents,
             notifier.allNodes,
@@ -36,18 +40,30 @@ class BackgroundCanvas extends StatelessWidget {
                   ),
                 ),
                 ...coordinates.map(
-                  (coordinate) => Positioned(
-                    top: Constants.gridSize * coordinate.$1.y - 2,
-                    left: Constants.gridSize * coordinate.$1.x - 2,
-                    child: Container(
-                      width: 4,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: coordinate.$2 == 1 ? Colors.red : Colors.black,
-                        shape: BoxShape.circle,
+                  (coordinate) {
+                    // bool isSelected = selectedGridComponent != null &&
+                    //     (coordinate.$1 ==
+                    //             selectedGridComponent.startCoordinate ||
+                    //         coordinate.$1 ==
+                    //             selectedGridComponent.endCoordinate);
+                    bool isSelected = false;
+                    return Positioned(
+                      top: Constants.gridSize * coordinate.$1.y - 2,
+                      left: Constants.gridSize * coordinate.$1.x - 2,
+                      child: Container(
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Colors.blue
+                              : coordinate.$2 == 1
+                                  ? Colors.red
+                                  : Colors.black,
+                          shape: BoxShape.circle,
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             );

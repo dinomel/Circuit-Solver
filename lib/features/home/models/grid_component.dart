@@ -8,6 +8,7 @@ class GridComponent {
   final Component component;
   Coordinate startCoordinate;
   Coordinate endCoordinate;
+  bool isSelected;
 
   double get rotation => atan2(
         endCoordinate.y - startCoordinate.y,
@@ -21,14 +22,15 @@ class GridComponent {
                 (endCoordinate.y - startCoordinate.y),
       );
 
-  GridComponent({
-    required this.component,
-    required this.startCoordinate,
-    required this.endCoordinate,
-  });
-
   double get top =>
       Constants.gridSize * startCoordinate.y - component.height / 2;
 
   double get left => Constants.gridSize * startCoordinate.x / 1;
+
+  GridComponent({
+    required this.component,
+    required this.startCoordinate,
+    required this.endCoordinate,
+    required this.isSelected,
+  });
 }

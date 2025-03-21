@@ -10,6 +10,7 @@ class Toolbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeNotifier = context.read<HomeNotifier>();
     return Container(
       color: Colors.blueGrey[100],
       width: 250,
@@ -26,24 +27,30 @@ class Toolbox extends StatelessWidget {
             }).toList(),
           ),
           Expanded(
-            child: Selector<HomeNotifier, List<GridComponent>>(
-              selector: (_, notifier) => notifier.gridComponents,
-              builder: (_, gridComponents, __) {
-                // ExpansionTileContro
-                return ExpansionTileGroup(
-                  toggleType: ToggleType.expandOnlyCurrent,
-                  children: gridComponents.map(
-                    (e) {
-                      return ExpansionTileItem(
-                        title: Text(e.component.name),
-                        children: [
-
-                        ],
-                      );
-                    },
-                  ).toList(),
-                );
-              },
+            child: SingleChildScrollView(
+              child: Selector<HomeNotifier, List<GridComponent>>(
+                selector: (_, notifier) =>
+                    notifier.gridComponents.reversed.toList(),
+                builder: (_, gridComponents, __) {
+                  return ExpansionTileGroup(
+                    toggleType: ToggleType.expandOnlyCurrent,
+                    children: gridComponents.map(
+                      (gridComponent) {
+                        return ExpansionTileItem(
+                          onExpansionChanged: (isExpanded) {
+                            homeNotifier.selectGridComponent(
+                              gridComponent: gridComponent,
+                              isSelected: isExpanded,
+                            );
+                          },
+                          title: Text(gridComponent.component.name),
+                          children: [],
+                        );
+                      },
+                    ).toList(),
+                  );
+                },
+              ),
             ),
           ),
         ],

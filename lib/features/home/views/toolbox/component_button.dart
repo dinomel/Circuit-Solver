@@ -21,7 +21,7 @@ class ComponentButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
-            onTap: () => homeNotifier.selectComponent(toolboxComponent),
+            onTap: () => homeNotifier.selectToolboxComponent(toolboxComponent),
             child: Center(child: Text(toolboxComponent.name)),
           ),
         );

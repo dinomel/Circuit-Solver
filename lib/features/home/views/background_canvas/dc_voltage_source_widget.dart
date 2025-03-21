@@ -4,7 +4,9 @@ import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class DCVoltageSourceWidget extends StatelessWidget {
-  const DCVoltageSourceWidget({super.key});
+  final bool isSelected;
+
+  const DCVoltageSourceWidget({super.key, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -13,14 +15,14 @@ class DCVoltageSourceWidget extends StatelessWidget {
         return Row(
           children: [
             Container(
-              height: constraints.maxHeight*2/3,
+              height: constraints.maxHeight * 2 / 3,
               width: 2,
-              color: Colors.black,
+              color: isSelected ? Colors.blue : Colors.black,
             ),
             const Spacer(),
             Container(
               width: 2,
-              color: Colors.black,
+              color: isSelected ? Colors.blue : Colors.black,
             ),
           ],
         );
