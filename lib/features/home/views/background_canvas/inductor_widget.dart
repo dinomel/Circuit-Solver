@@ -4,19 +4,29 @@ import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class InductorWidget extends StatelessWidget {
-  const InductorWidget({super.key});
+  final bool isSelected;
+
+  const InductorWidget({super.key, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: InductorPainter());
+    return CustomPaint(
+      painter: InductorPainter(
+        color: isSelected ? Colors.blue : Colors.black,
+      ),
+    );
   }
 }
 
 class InductorPainter extends CustomPainter {
+  final Color color;
+
+  InductorPainter({super.repaint, required this.color});
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()
-      ..color = Colors.black
+      ..color = color
       ..style = PaintingStyle.stroke
       ..strokeWidth = 2.0;
 

@@ -36,4 +36,14 @@ class Coordinate {
 
   @override
   int get hashCode => x.hashCode ^ y.hashCode;
+
+  @override
+  String toString() {
+    return 'Coordinate{x: $x, y: $y}';
+  }
+
+  Offset toOffset() {
+    const gridSize = Constants.gridSize;
+    return Offset(x * gridSize / 1, y * gridSize / 1);
+  }
 }

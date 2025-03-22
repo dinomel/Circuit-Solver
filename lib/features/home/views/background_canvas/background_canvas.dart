@@ -2,6 +2,7 @@ import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
+import 'package:circuit_solver/features/home/views/background_canvas/component_selector.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/grid_component_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,10 +17,15 @@ class BackgroundCanvas extends StatelessWidget {
       onPointerDown: homeNotifier.onPointerDown,
       onPointerMove: homeNotifier.onPointerMove,
       onPointerUp: homeNotifier.onPointerUp,
+      onPointerHover: homeNotifier.onPointerHover,
       child: Container(
         color: Colors.white,
-        child: Selector<HomeNotifier,
-            (List<GridComponent>, List<(Coordinate, int)>)>(
+        child: Selector<
+            HomeNotifier,
+            (
+              List<GridComponent>,
+              List<(Coordinate, int)>,
+            )>(
           selector: (_, notifier) => (
             notifier.gridComponents,
             notifier.allNodes,
@@ -36,19 +42,34 @@ class BackgroundCanvas extends StatelessWidget {
                   ),
                 ),
                 ...coordinates.map(
-                  (coordinate) => Positioned(
-                    top: Constants.gridSize * coordinate.$1.y - 2,
-                    left: Constants.gridSize * coordinate.$1.x - 2,
-                    child: Container(
-                      width: 4,
-                      height: 4,
-                      decoration: BoxDecoration(
-                        color: coordinate.$2 == 1 ? Colors.red : Colors.black,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
+                  (coordinate) {
+                    return Selector<HomeNotifier, bool>(
+                      selector: (_, notifier) =>
+                          notifier.hoveredCoordinate == coordinate.$1,
+                      builder: (_, isSelected, __) {
+                        return Positioned(
+                          top: Constants.gridSize * coordinate.$1.y -
+                              (isSelected ? 4 : 2),
+                          left: Constants.gridSize * coordinate.$1.x -
+                              (isSelected ? 4 : 2),
+                          child: Container(
+                            width: isSelected ? 8 : 4,
+                            height: isSelected ? 8 : 4,
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? Colors.blue
+                                  : coordinate.$2 == 1
+                                      ? Colors.red
+                                      : Colors.black,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
                 ),
+                const ComponentSelector(),
               ],
             );
           },
@@ -81,7 +102,7 @@ class SelectionPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (rect != null) {
       final paint = Paint()
-        ..color = Colors.blue.withOpacity(0.1)
+        ..color = Colors.blue.withValues(alpha: 0.1)
         ..style = PaintingStyle.fill;
       canvas.drawRect(rect!, paint);
 
