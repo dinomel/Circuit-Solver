@@ -22,9 +22,8 @@ class GridComponent {
                 (endCoordinate.y - startCoordinate.y),
       );
 
-  double get top {
-    return Constants.gridSize * startCoordinate.y - component.height / 2;
-  }
+  double get top =>
+      Constants.gridSize * startCoordinate.y - component.height / 2;
 
   double get left => Constants.gridSize * startCoordinate.x / 1;
 
