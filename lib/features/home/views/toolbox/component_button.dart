@@ -14,7 +14,8 @@ class ComponentButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final homeNotifier = context.read<HomeNotifier>();
     return Selector<HomeNotifier, bool>(
-      selector: (_, notifier) => notifier.selectedToolboxComponent == toolboxComponent,
+      selector: (_, notifier) =>
+          notifier.selectedToolboxComponent == toolboxComponent,
       builder: (_, isSelected, __) {
         return Material(
           color: isSelected ? Colors.blue : Colors.white,

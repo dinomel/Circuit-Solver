@@ -102,7 +102,7 @@ class SelectionPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (rect != null) {
       final paint = Paint()
-        ..color = Colors.blue.withOpacity(0.1)
+        ..color = Colors.blue.withValues(alpha: 0.1)
         ..style = PaintingStyle.fill;
       canvas.drawRect(rect!, paint);
 

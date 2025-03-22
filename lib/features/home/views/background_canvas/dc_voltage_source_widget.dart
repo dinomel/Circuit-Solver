@@ -1,6 +1,3 @@
-import 'dart:math' show pi;
-
-import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 class DCVoltageSourceWidget extends StatelessWidget {

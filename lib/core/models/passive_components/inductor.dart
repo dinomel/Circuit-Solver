@@ -4,8 +4,8 @@ import 'package:circuit_solver/core/models/passive_components/passive_component.
 class Inductor extends PassiveComponent {
   final double inductance;
 
-   Inductor({
-     super.id,
+  Inductor({
+    super.id,
     required this.inductance,
   }) : super(
           name: 'Inductor',

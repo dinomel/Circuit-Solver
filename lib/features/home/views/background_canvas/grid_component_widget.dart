@@ -4,7 +4,6 @@ import 'package:circuit_solver/core/models/passive_components/inductor.dart';
 import 'package:circuit_solver/core/models/passive_components/resistor.dart';
 import 'package:circuit_solver/core/models/sources/ac_voltage_source.dart';
 import 'package:circuit_solver/core/models/sources/dc_voltage_source.dart';
-import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
 import 'package:circuit_solver/features/home/views/background_canvas/ac_voltage_source_widget.dart';

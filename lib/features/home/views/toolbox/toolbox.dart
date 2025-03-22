@@ -44,7 +44,7 @@ class Toolbox extends StatelessWidget {
                             );
                           },
                           title: Text(gridComponent.component.name),
-                          children: [],
+                          children: const [],
                         );
                       },
                     ).toList(),

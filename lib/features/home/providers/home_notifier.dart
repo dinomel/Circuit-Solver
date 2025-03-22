@@ -1,6 +1,3 @@
-import 'dart:developer';
-
-import 'package:circuit_solver/core/constants/constants.dart';
 import 'package:circuit_solver/core/models/passive_components/capacitor.dart';
 import 'package:circuit_solver/core/models/component.dart';
 import 'package:circuit_solver/core/models/passive_components/inductor.dart';
