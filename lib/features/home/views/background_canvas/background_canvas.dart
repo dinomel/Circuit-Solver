@@ -43,16 +43,18 @@ class BackgroundCanvas extends StatelessWidget {
                 ),
                 ...coordinates.map(
                   (coordinate) {
-                    return Positioned(
-                      top: Constants.gridSize * coordinate.$1.y - 2,
-                      left: Constants.gridSize * coordinate.$1.x - 2,
-                      child: Selector<HomeNotifier, bool>(
-                        selector: (_, notifier) =>
-                            notifier.hoveredCoordinate == coordinate.$1,
-                        builder: (_, isSelected, __) {
-                          return Container(
-                            width: 4,
-                            height: 4,
+                    return Selector<HomeNotifier, bool>(
+                      selector: (_, notifier) =>
+                          notifier.hoveredCoordinate == coordinate.$1,
+                      builder: (_, isSelected, __) {
+                        return Positioned(
+                          top: Constants.gridSize * coordinate.$1.y -
+                              (isSelected ? 4 : 2),
+                          left: Constants.gridSize * coordinate.$1.x -
+                              (isSelected ? 4 : 2),
+                          child: Container(
+                            width: isSelected ? 8 : 4,
+                            height: isSelected ? 8 : 4,
                             decoration: BoxDecoration(
                               color: isSelected
                                   ? Colors.blue
@@ -61,9 +63,9 @@ class BackgroundCanvas extends StatelessWidget {
                                       : Colors.black,
                               shape: BoxShape.circle,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),

@@ -23,7 +23,6 @@ class HomeNotifier extends ChangeNotifier {
   Offset? _selectionRectEndPosition;
   GridComponent? _hoveredGridComponent;
   Coordinate? hoveredCoordinate;
-  bool? _isStartCoordinateHovered;
 
   List<GridComponent> get gridComponents => [..._gridComponents];
 
@@ -174,14 +173,16 @@ class HomeNotifier extends ChangeNotifier {
   void onPointerMove(PointerMoveEvent event) {
     if (selectedToolboxComponent == null) {
       if (hoveredCoordinate != null) {
-        if (_isStartCoordinateHovered!) {
+        if (hoveredCoordinate == _hoveredGridComponent?.startCoordinate) {
           _hoveredGridComponent?.startCoordinate = Coordinate.fromOffset(
             event.localPosition,
           );
+          hoveredCoordinate = _hoveredGridComponent?.startCoordinate;
         } else {
           _hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
             event.localPosition,
           );
+          hoveredCoordinate = _hoveredGridComponent?.endCoordinate;
         }
         notifyListeners();
         return;
@@ -221,7 +222,6 @@ class HomeNotifier extends ChangeNotifier {
       _selectionRectEndPosition = null;
       _hoveredGridComponent = null;
       hoveredCoordinate = null;
-      _isStartCoordinateHovered = null;
       _isMovingNode = false;
       notifyListeners();
       return;
@@ -241,10 +241,9 @@ class HomeNotifier extends ChangeNotifier {
     final coordinate = Coordinate.fromOffset(pos);
     final offset = coordinate.toOffset();
 
-    if ((offset - pos).distanceSquared > 9) {
+    if ((offset - pos).distanceSquared > 16) {
       _hoveredGridComponent = null;
       hoveredCoordinate = null;
-      _isStartCoordinateHovered = null;
       notifyListeners();
       return;
     }
@@ -256,8 +255,6 @@ class HomeNotifier extends ChangeNotifier {
     );
     if (_hoveredGridComponent == null) return;
     hoveredCoordinate = coordinate;
-    _isStartCoordinateHovered =
-        _hoveredGridComponent!.startCoordinate == coordinate;
     notifyListeners();
   }
 
