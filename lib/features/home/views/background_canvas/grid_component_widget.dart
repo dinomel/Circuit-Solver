@@ -22,11 +22,11 @@ class GridComponentWidget extends StatelessWidget {
     required this.gridComponent,
   });
 
-  Widget _buildSpecificComponent() {
+  Widget _buildSpecificComponent(bool isHovered) {
     final length = Constants.gridSize * gridComponent.distance;
     final width = gridComponent.component.width;
     final height = gridComponent.component.height;
-    final isSelected = gridComponent.isSelected;
+    final isSelected = gridComponent.isSelected || isHovered;
 
     Widget widget;
 
@@ -72,24 +72,26 @@ class GridComponentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<HomeNotifier, (double, double, double, double)>(
-      selector: (_, __) => (
+    return Selector<HomeNotifier, (double, double, double, double, bool)>(
+      selector: (_, notifier) => (
         gridComponent.rotation,
         gridComponent.distance,
         gridComponent.top,
         gridComponent.left,
+        notifier.hoveredGridComponent == gridComponent,
       ),
       builder: (_, data, __) {
         final rotation = data.$1;
         final top = data.$3;
         final left = data.$4;
+        final isHovered = data.$5;
         return Positioned(
           top: top,
           left: left,
           child: Transform.rotate(
             angle: rotation,
             alignment: Alignment.centerLeft,
-            child: _buildSpecificComponent(),
+            child: _buildSpecificComponent(isHovered),
           ),
         );
       },

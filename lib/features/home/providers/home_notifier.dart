@@ -12,13 +12,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show KeyDownEvent, PointerHoverEvent;
 
 class HomeNotifier extends ChangeNotifier {
+  static const double componentHoverRadius = 16.0;
+
   final FocusNode homeFocusNode = FocusNode();
   ToolboxComponent? selectedToolboxComponent;
   final List<GridComponent> _gridComponents = [];
   Rect? selectionRect;
   Offset? _selectionRectStartPosition;
   Offset? _selectionRectEndPosition;
-  GridComponent? _hoveredGridComponent;
+  GridComponent? hoveredGridComponent;
   Coordinate? hoveredCoordinate;
 
   List<GridComponent> get gridComponents => [..._gridComponents];
@@ -119,6 +121,9 @@ class HomeNotifier extends ChangeNotifier {
         _isMovingNode = true;
         return;
       }
+      if (hoveredGridComponent != null) {
+        return;
+      }
       //TODO: if a component is behind it should be selected and no rect is drawn,
       //TODO: instead that component should be moved
 
@@ -170,16 +175,16 @@ class HomeNotifier extends ChangeNotifier {
   void onPointerMove(PointerMoveEvent event) {
     if (selectedToolboxComponent == null) {
       if (hoveredCoordinate != null) {
-        if (hoveredCoordinate == _hoveredGridComponent?.startCoordinate) {
-          _hoveredGridComponent?.startCoordinate = Coordinate.fromOffset(
+        if (hoveredCoordinate == hoveredGridComponent?.startCoordinate) {
+          hoveredGridComponent?.startCoordinate = Coordinate.fromOffset(
             event.localPosition,
           );
-          hoveredCoordinate = _hoveredGridComponent?.startCoordinate;
+          hoveredCoordinate = hoveredGridComponent?.startCoordinate;
         } else {
-          _hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
+          hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
             event.localPosition,
           );
-          hoveredCoordinate = _hoveredGridComponent?.endCoordinate;
+          hoveredCoordinate = hoveredGridComponent?.endCoordinate;
         }
         notifyListeners();
         return;
@@ -217,7 +222,7 @@ class HomeNotifier extends ChangeNotifier {
       selectionRect = null;
       _selectionRectStartPosition = null;
       _selectionRectEndPosition = null;
-      _hoveredGridComponent = null;
+      hoveredGridComponent = null;
       hoveredCoordinate = null;
       _isMovingNode = false;
       notifyListeners();
@@ -235,22 +240,21 @@ class HomeNotifier extends ChangeNotifier {
   void onPointerHover(PointerHoverEvent event) {
     if (selectedToolboxComponent != null || _isMovingNode) return;
     final pos = event.localPosition;
+
+    hoveredGridComponent = _gridComponents.firstWhereOrNull(
+      (gridComponent) =>
+          gridComponent.distanceToOffsetSquared(pos) <
+          componentHoverRadius * componentHoverRadius,
+    );
+
     final coordinate = Coordinate.fromOffset(pos);
     final offset = coordinate.toOffset();
-
-    if ((offset - pos).distanceSquared > 16) {
-      _hoveredGridComponent = null;
+    if ((offset - pos).distanceSquared > componentHoverRadius) {
       hoveredCoordinate = null;
       notifyListeners();
       return;
     }
-
-    _hoveredGridComponent = _gridComponents.firstWhereOrNull(
-      (gridComponent) =>
-          gridComponent.startCoordinate == coordinate ||
-          gridComponent.endCoordinate == coordinate,
-    );
-    if (_hoveredGridComponent == null) return;
+    if (hoveredGridComponent == null) return;
     hoveredCoordinate = coordinate;
     notifyListeners();
   }
