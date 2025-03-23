@@ -121,6 +121,7 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   bool _isMovingNode = false;
+  Offset? _pointerDownPosition;
 
   void onPointerDown(PointerDownEvent event) {
     _unselectAllGridComponents();
@@ -131,6 +132,7 @@ class HomeNotifier extends ChangeNotifier {
         return;
       }
       if (hoveredGridComponent != null) {
+        _pointerDownPosition = event.localPosition;
         return;
       }
       //TODO: if a component is behind it should be selected and no rect is drawn,
@@ -191,6 +193,19 @@ class HomeNotifier extends ChangeNotifier {
         return;
       }
 
+      if (hoveredGridComponent != null) {
+        final dOffset = event.localPosition - _pointerDownPosition!;
+        hoveredGridComponent?.startCoordinate = Coordinate.fromOffset(
+          hoveredGridComponent!.startCoordinate.toOffset() + dOffset,
+        );
+        hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
+          hoveredGridComponent!.endCoordinate.toOffset() + dOffset,
+        );
+        ///TODO: Skontaj i popravi (Inace, budi oprezan)
+        notifyListeners();
+        return;
+      }
+
       if (_selectionRectStartPosition == null) return;
       _selectionRectEndPosition = event.localPosition;
       selectionRect = Rect.fromPoints(
@@ -226,6 +241,7 @@ class HomeNotifier extends ChangeNotifier {
       hoveredGridComponent = null;
       hoveredCoordinate = null;
       _isMovingNode = false;
+      _pointerDownPosition = null;
       notifyListeners();
       return;
     }
