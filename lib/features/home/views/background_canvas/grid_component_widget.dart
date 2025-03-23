@@ -28,22 +28,14 @@ class GridComponentWidget extends StatelessWidget {
     final height = gridComponent.component.height;
     final isSelected = gridComponent.isSelected || isHovered;
 
-    Widget widget;
-
-    switch (gridComponent.component) {
-      case Resistor():
-        widget = ResistorWidget(isSelected: isSelected);
-      case Capacitor():
-        widget = CapacitorWidget(isSelected: isSelected);
-      case Inductor():
-        widget = InductorWidget(isSelected: isSelected);
-      case ACVoltageSource():
-        widget = ACVoltageSourceWidget(isSelected: isSelected);
-      case DCVoltageSource():
-        widget = DCVoltageSourceWidget(isSelected: isSelected);
-      default:
-        widget = const SizedBox();
-    }
+    Widget widget = switch (gridComponent.component) {
+      Resistor() => ResistorWidget(isSelected: isSelected),
+      Capacitor() => CapacitorWidget(isSelected: isSelected),
+      Inductor() => InductorWidget(isSelected: isSelected),
+      ACVoltageSource() => ACVoltageSourceWidget(isSelected: isSelected),
+      DCVoltageSource() => DCVoltageSourceWidget(isSelected: isSelected),
+      _ => const SizedBox()
+    };
 
     return SizedBox(
       width: length,

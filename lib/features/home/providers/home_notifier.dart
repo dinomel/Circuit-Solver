@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show KeyDownEvent, PointerHoverEvent;
 
 class HomeNotifier extends ChangeNotifier {
-  static const double componentHoverRadius = 16.0;
+  static const double componentHoverRadius = 12.0;
 
   final FocusNode homeFocusNode = FocusNode();
   ToolboxComponent? selectedToolboxComponent;
@@ -26,9 +26,7 @@ class HomeNotifier extends ChangeNotifier {
   List<GridComponent> get gridComponents => [..._gridComponents];
 
   List<GridComponent> get selectedGridComponents =>
-      _gridComponents.where((e) => e.isSelected).toList(
-          // growable: false,
-          );
+      _gridComponents.where((e) => e.isSelected).toList();
 
   List<(Coordinate, int)> get allNodes => _gridComponents.fold(
         [],
@@ -80,27 +78,38 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   void onKeyEvent(KeyEvent event) {
-    if (event is KeyDownEvent) {
-      switch (event.logicalKey.keyLabel) {
-        case ' ':
-          selectToolboxComponent(null);
-        case 'W':
-          selectToolboxComponent(ToolboxComponent.wire);
-        case 'R':
-          selectToolboxComponent(ToolboxComponent.resistor);
-        case 'C':
-          selectToolboxComponent(ToolboxComponent.capacitor);
-        case 'L':
-          selectToolboxComponent(ToolboxComponent.inductor);
-        case 'Arrow Left':
-          _moveSelectedGridComponents(-1, 0);
-        case 'Arrow Right':
-          _moveSelectedGridComponents(1, 0);
-        case 'Arrow Up':
-          _moveSelectedGridComponents(0, -1);
-        case 'Arrow Down':
-          _moveSelectedGridComponents(0, 1);
-      }
+    if (event is! KeyDownEvent) return;
+    switch (event.logicalKey.keyLabel) {
+      case ' ':
+        selectToolboxComponent(null);
+        break;
+      case 'W':
+        selectToolboxComponent(ToolboxComponent.wire);
+        break;
+      case 'R':
+        selectToolboxComponent(ToolboxComponent.resistor);
+        break;
+      case 'C':
+        selectToolboxComponent(ToolboxComponent.capacitor);
+        break;
+      case 'L':
+        selectToolboxComponent(ToolboxComponent.inductor);
+        break;
+      case 'Arrow Left':
+        _moveSelectedGridComponents(-1, 0);
+        break;
+      case 'Arrow Right':
+        _moveSelectedGridComponents(1, 0);
+        break;
+      case 'Arrow Up':
+        _moveSelectedGridComponents(0, -1);
+        break;
+      case 'Arrow Down':
+        _moveSelectedGridComponents(0, 1);
+        break;
+      case 'Backspace':
+        _deleteSelectedGridComponents();
+        break;
     }
   }
 
@@ -145,22 +154,14 @@ class HomeNotifier extends ChangeNotifier {
       event.localPosition,
     );
 
-    Component component;
-
-    switch (selectedToolboxComponent!) {
-      case ToolboxComponent.wire:
-        component = Wire();
-      case ToolboxComponent.resistor:
-        component = Resistor(resistance: 1000);
-      case ToolboxComponent.capacitor:
-        component = Capacitor(capacitance: 1 / 100000);
-      case ToolboxComponent.inductor:
-        component = Inductor(inductance: 1);
-      case ToolboxComponent.acVoltageSource:
-        component = ACVoltageSource(maxVoltage: 5);
-      case ToolboxComponent.dcVoltageSource:
-        component = DCVoltageSource(voltage: 5);
-    }
+    Component component = switch (selectedToolboxComponent!) {
+      ToolboxComponent.wire => Wire(),
+      ToolboxComponent.resistor => Resistor(resistance: 1000),
+      ToolboxComponent.capacitor => Capacitor(capacitance: 1 / 100000),
+      ToolboxComponent.inductor => Inductor(inductance: 1),
+      ToolboxComponent.acVoltageSource => ACVoltageSource(maxVoltage: 5),
+      ToolboxComponent.dcVoltageSource => DCVoltageSource(voltage: 5)
+    };
 
     final gridComponent = GridComponent(
       component: component,
@@ -254,8 +255,14 @@ class HomeNotifier extends ChangeNotifier {
       notifyListeners();
       return;
     }
-    if (hoveredGridComponent == null) return;
+    final gridComponentWithCoordinate = _gridComponents.firstWhereOrNull(
+      (gridComponent) =>
+          gridComponent.startCoordinate == coordinate ||
+          gridComponent.endCoordinate == coordinate,
+    );
+    if (gridComponentWithCoordinate == null) return;
     hoveredCoordinate = coordinate;
+    hoveredGridComponent = gridComponentWithCoordinate;
     notifyListeners();
   }
 
@@ -263,6 +270,11 @@ class HomeNotifier extends ChangeNotifier {
   void dispose() {
     homeFocusNode.dispose();
     super.dispose();
+  }
+
+  void _deleteSelectedGridComponents() {
+    _gridComponents.removeWhere((e) => e.isSelected);
+    notifyListeners();
   }
 }
 
