@@ -22,6 +22,8 @@ class HomeNotifier extends ChangeNotifier {
   Offset? _selectionRectEndPosition;
   GridComponent? hoveredGridComponent;
   Coordinate? hoveredCoordinate;
+  Coordinate? _initialStartCoordinate;
+  Coordinate? _initialEndCoordinate;
 
   List<GridComponent> get gridComponents => [..._gridComponents];
 
@@ -133,6 +135,8 @@ class HomeNotifier extends ChangeNotifier {
       }
       if (hoveredGridComponent != null) {
         _pointerDownPosition = event.localPosition;
+        _initialStartCoordinate = hoveredGridComponent!.startCoordinate;
+        _initialEndCoordinate = hoveredGridComponent!.endCoordinate;
         return;
       }
       //TODO: if a component is behind it should be selected and no rect is drawn,
@@ -195,14 +199,17 @@ class HomeNotifier extends ChangeNotifier {
 
       if (hoveredGridComponent != null) {
         final dOffset = event.localPosition - _pointerDownPosition!;
-        hoveredGridComponent?.startCoordinate = Coordinate.fromOffset(
-          hoveredGridComponent!.startCoordinate.toOffset() + dOffset,
+        final newStartCoordinate = Coordinate.fromOffset(
+          _initialStartCoordinate!.toOffset() + dOffset,
         );
-        hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
-          hoveredGridComponent!.endCoordinate.toOffset() + dOffset,
-        );
-        ///TODO: Skontaj i popravi (Inace, budi oprezan)
-        notifyListeners();
+
+        if (hoveredGridComponent!.startCoordinate != newStartCoordinate) {
+          hoveredGridComponent?.startCoordinate = newStartCoordinate;
+          hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
+            _initialEndCoordinate!.toOffset() + dOffset,
+          );
+          notifyListeners();
+        }
         return;
       }
 
@@ -242,6 +249,8 @@ class HomeNotifier extends ChangeNotifier {
       hoveredCoordinate = null;
       _isMovingNode = false;
       _pointerDownPosition = null;
+      _initialStartCoordinate = null;
+      _initialEndCoordinate = null;
       notifyListeners();
       return;
     }
