@@ -22,8 +22,8 @@ class HomeNotifier extends ChangeNotifier {
   Offset? _selectionRectEndPosition;
   GridComponent? hoveredGridComponent;
   Coordinate? hoveredCoordinate;
-  Coordinate? _initialStartCoordinate;
-  Coordinate? _initialEndCoordinate;
+
+  List<(String, Coordinate, Coordinate)> _initialMoveCoordinates = [];
 
   List<GridComponent> get gridComponents => [..._gridComponents];
 
@@ -126,21 +126,35 @@ class HomeNotifier extends ChangeNotifier {
   Offset? _pointerDownPosition;
 
   void onPointerDown(PointerDownEvent event) {
-    _unselectAllGridComponents();
-
     if (selectedToolboxComponent == null) {
       if (hoveredCoordinate != null) {
+        _unselectAllGridComponents();
         _isMovingNode = true;
         return;
       }
       if (hoveredGridComponent != null) {
+        if (!hoveredGridComponent!.isSelected) {
+          _unselectAllGridComponents();
+          selectGridComponent(
+            gridComponent: hoveredGridComponent!,
+            isSelected: true,
+          );
+        }
         _pointerDownPosition = event.localPosition;
-        _initialStartCoordinate = hoveredGridComponent!.startCoordinate;
-        _initialEndCoordinate = hoveredGridComponent!.endCoordinate;
+        for (var gridComponent in _gridComponents) {
+          if (gridComponent.isSelected) {
+            _initialMoveCoordinates.add(
+              (
+                gridComponent.component.id,
+                gridComponent.startCoordinate,
+                gridComponent.endCoordinate,
+              ),
+            );
+          }
+        }
         return;
       }
-      //TODO: if a component is behind it should be selected and no rect is drawn,
-      //TODO: instead that component should be moved
+      _unselectAllGridComponents();
 
       _selectionRectStartPosition = event.localPosition;
       _selectionRectEndPosition = event.localPosition;
@@ -153,6 +167,7 @@ class HomeNotifier extends ChangeNotifier {
       return;
     }
 
+    _unselectAllGridComponents();
     final Coordinate startCoordinate = Coordinate.fromOffset(
       event.localPosition,
     );
@@ -199,17 +214,28 @@ class HomeNotifier extends ChangeNotifier {
 
       if (hoveredGridComponent != null) {
         final dOffset = event.localPosition - _pointerDownPosition!;
-        final newStartCoordinate = Coordinate.fromOffset(
-          _initialStartCoordinate!.toOffset() + dOffset,
-        );
 
-        if (hoveredGridComponent!.startCoordinate != newStartCoordinate) {
-          hoveredGridComponent?.startCoordinate = newStartCoordinate;
-          hoveredGridComponent?.endCoordinate = Coordinate.fromOffset(
-            _initialEndCoordinate!.toOffset() + dOffset,
-          );
-          notifyListeners();
+        for (var gridComponent in _gridComponents) {
+          if (gridComponent.isSelected) {
+            final initialGridComponent = _initialMoveCoordinates
+                .firstWhere((e) => e.$1 == gridComponent.component.id);
+            final initialStartCoordinate = initialGridComponent.$2;
+            final initialEndCoordinate = initialGridComponent.$3;
+
+            final newStartCoordinate = Coordinate.fromOffset(
+              initialStartCoordinate.toOffset() + dOffset,
+            );
+
+            if (gridComponent.startCoordinate != newStartCoordinate) {
+              gridComponent.startCoordinate = newStartCoordinate;
+              gridComponent.endCoordinate = Coordinate.fromOffset(
+                initialEndCoordinate.toOffset() + dOffset,
+              );
+            }
+          }
         }
+        notifyListeners();
+
         return;
       }
 
@@ -249,8 +275,7 @@ class HomeNotifier extends ChangeNotifier {
       hoveredCoordinate = null;
       _isMovingNode = false;
       _pointerDownPosition = null;
-      _initialStartCoordinate = null;
-      _initialEndCoordinate = null;
+      _initialMoveCoordinates.clear();
       notifyListeners();
       return;
     }
