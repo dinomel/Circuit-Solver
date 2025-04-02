@@ -9,7 +9,8 @@ import 'package:circuit_solver/features/home/models/coordinate.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show KeyDownEvent, PointerHoverEvent;
+import 'package:flutter/services.dart'
+    show KeyDownEvent, KeyUpEvent, PointerHoverEvent;
 
 class HomeNotifier extends ChangeNotifier {
   static const double componentHoverRadius = 12.0;
@@ -23,7 +24,9 @@ class HomeNotifier extends ChangeNotifier {
   GridComponent? hoveredGridComponent;
   Coordinate? hoveredCoordinate;
 
-  List<(String, Coordinate, Coordinate)> _initialMoveCoordinates = [];
+  bool _isHoldingShift = false;
+
+  final List<(String, Coordinate, Coordinate)> _initialMoveCoordinates = [];
 
   List<GridComponent> get gridComponents => [..._gridComponents];
 
@@ -80,8 +83,15 @@ class HomeNotifier extends ChangeNotifier {
   }
 
   void onKeyEvent(KeyEvent event) {
+    if (event is KeyUpEvent) {
+      _isHoldingShift = false;
+      return;
+    }
     if (event is! KeyDownEvent) return;
     switch (event.logicalKey.keyLabel) {
+      case 'Shift Left':
+        _isHoldingShift = true;
+        break;
       case ' ':
         selectToolboxComponent(null);
         break;
@@ -133,13 +143,15 @@ class HomeNotifier extends ChangeNotifier {
         return;
       }
       if (hoveredGridComponent != null) {
-        if (!hoveredGridComponent!.isSelected) {
+        if (!_isHoldingShift && !hoveredGridComponent!.isSelected) {
           _unselectAllGridComponents();
-          selectGridComponent(
-            gridComponent: hoveredGridComponent!,
-            isSelected: true,
-          );
         }
+
+        selectGridComponent(
+          gridComponent: hoveredGridComponent!,
+          isSelected:
+              _isHoldingShift ? !hoveredGridComponent!.isSelected : true,
+        );
         _pointerDownPosition = event.localPosition;
         for (var gridComponent in _gridComponents) {
           if (gridComponent.isSelected) {
@@ -245,7 +257,7 @@ class HomeNotifier extends ChangeNotifier {
         _selectionRectStartPosition!,
         _selectionRectEndPosition!,
       );
-      // select components
+
       for (var gridComponent in _gridComponents) {
         if (selectionRect!.contains(gridComponent.startCoordinate.toOffset()) ||
             selectionRect!.contains(gridComponent.endCoordinate.toOffset())) {
