@@ -1,3 +1,5 @@
+import 'package:circuit_solver/core/models/passive_components/resistor.dart';
+import 'package:circuit_solver/core/models/wire.dart';
 import 'package:circuit_solver/features/home/models/grid_component.dart';
 import 'package:circuit_solver/features/home/providers/home_notifier.dart';
 import 'package:circuit_solver/features/home/views/toolbox/component_button.dart';
@@ -38,13 +40,24 @@ class Toolbox extends StatelessWidget {
                       (gridComponent) {
                         return ExpansionTileItem(
                           onExpansionChanged: (isExpanded) {
-                            homeNotifier.selectGridComponent(
+                            homeNotifier.selectOnlyThisGridComponent(
                               gridComponent: gridComponent,
                               isSelected: isExpanded,
                             );
                           },
                           title: Text(gridComponent.component.name),
-                          children: const [],
+                          children: [
+                            gridComponent.component is Wire
+                                ? const SizedBox()
+                                : gridComponent.component is Resistor
+                                    ? const Row(
+                                        children: [
+                                          Text('R = '),
+                                          Expanded(child: TextField()),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                          ],
                         );
                       },
                     ).toList(),

@@ -60,7 +60,15 @@ class HomeNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  void selectGridComponent({
+  void selectOnlyThisGridComponent({
+    required GridComponent gridComponent,
+    required bool isSelected,
+  }) {
+    _unselectAllGridComponents();
+    _selectGridComponent(gridComponent: gridComponent, isSelected: isSelected);
+  }
+
+  void _selectGridComponent({
     required GridComponent gridComponent,
     required bool isSelected,
   }) {
@@ -147,7 +155,7 @@ class HomeNotifier extends ChangeNotifier {
           _unselectAllGridComponents();
         }
 
-        selectGridComponent(
+        _selectGridComponent(
           gridComponent: hoveredGridComponent!,
           isSelected:
               _isHoldingShift ? !hoveredGridComponent!.isSelected : true,
